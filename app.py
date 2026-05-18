@@ -34,7 +34,23 @@ def monhistogramme():
 @app.route("/contact")
 def MaPremiereAPI():
     return render_template("contact.html")
+@app.route("/atelier")
+def atelier():
+    return render_template("atelier.html")
 
+@app.get("/atelier-data")
+def atelier_data():
+    url = "https://api.open-meteo.com/v1/forecast?latitude=48.5734&longitude=7.7521&hourly=visibility"
+    response = requests.get(url)
+    data = response.json()
+    times = data.get("hourly", {}).get("time", [])
+    visibility = data.get("hourly", {}).get("visibility", [])
+    n = min(len(times), len(visibility))
+    result = [
+        {"datetime": times[i], "visibility": visibility[i]}
+        for i in range(n)
+    ]
+    return jsonify(result)
 
 # Ne rien mettre après ce commentaire
     
