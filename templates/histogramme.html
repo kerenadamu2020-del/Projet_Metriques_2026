@@ -1,1 +1,37 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Histogramme</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
 
+      function drawChart() {
+        fetch('/paris')
+          .then(response => response.json())
+          .then(data => {
+            var chartData = [['Date', 'Température (°C)']];
+            data.forEach(function(item) {
+              chartData.push([item.datetime, item.temperature_c]);
+            });
+
+            var dataTable = google.visualization.arrayToDataTable(chartData);
+            var options = {
+              title: 'Prévisions météo Paris - 7 prochains jours',
+              legend: { position: 'none' },
+              hAxis: { title: 'Date' },
+              vAxis: { title: 'Température (°C)' }
+            };
+
+            var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+            chart.draw(dataTable, options);
+          });
+      }
+    </script>
+  </head>
+  <body>
+    <h2>Histogramme météo Paris</h2>
+    <div id="chart_div" style="width: 100%; height: 500px;"></div>
+  </body>
+</html>
